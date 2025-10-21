@@ -1,12 +1,9 @@
-variable "aws_region" {
-  description = "The AWS region for the deployment."
-  type        = string
-  default     = "us-east-1"
-}
-
-variable "blue-green-user-secret" {
-  description = "The ARN of the AWS Secrets Manager secret holding the IAM credentials."
-  type        = string
+terraform {
+  backend "s3" {
+    bucket = "liorm-portfolio-tfstate"
+    key    = "blue-green-tfstate/terraform.tfstate"
+    region = "us-east-1"
+  }
 }
 
 data "aws_secretsmanager_secret_version" "creds" {

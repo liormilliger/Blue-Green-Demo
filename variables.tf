@@ -15,3 +15,8 @@ variable "instance_type" {
   type        = string
   default     = "t2.nano"
 }
+
+variable "blue-green-user-secret" {
+  description = "The ARN of the AWS Secrets Manager secret holding the IAM credentials."
+  type        = string
+}
