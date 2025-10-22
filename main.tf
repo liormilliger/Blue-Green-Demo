@@ -6,7 +6,13 @@ terraform {
   }
 }
 
+provider "aws" {
+  alias  = "secrets_manager_provider"
+  region = var.aws_region
+}
+
 data "aws_secretsmanager_secret_version" "creds" {
+  provider  = aws.secrets_manager_provider
   secret_id = var.blue-green-user-secret
 }
 
@@ -16,7 +22,7 @@ locals {
 
 provider "aws" {
   region     = var.aws_region
-  access_key = local.aws_credentials.access_key
-  secret_key = local.aws_credentials.secret_key
+  access_key = local.aws_credentials.aws_access_key
+  secret_key = local.aws_credentials.aws_secret_access_key
 }
 
