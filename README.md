@@ -138,3 +138,64 @@ This policy allows the user/role running Terraform to access the S3 backend stat
         }
     ]
 }
+
+### 2. Policy for the Project Service User (Credentials in Secret)
+
+This is the policy you should attach to the IAM user whose credentials are stored in the `blue-green-creds-qazpEp` secret. It grants only the permissions needed to create, manage, and describe the EC2 instances and security groups defined in this project.
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ManageEC2InstancesAndImages",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RunInstances",
+                "ec2:TerminateInstances",
+                "ec2:DescribeInstances",
+                "ec2:DescribeImages",
+                "ec2:CreateTags",
+                "ec2:DeleteTags"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ManageEC2SecurityGroups",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateSecurityGroup",
+                "ec2:DeleteSecurityGroup",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:RevokeSecurityGroupIngress",
+                "ec2:AuthorizeSecurityGroupEgress",
+                "ec2:RevokeSecurityGroupEgress",
+                "ec2:DescribeSecurityGroups"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+---
+
+## 🗂️ File Structure
+
+* `main.tf`: Configures the Terraform S3 backend, the AWS providers, and the data source to fetch credentials from AWS Secrets Manager.
+* `instances.tf`: Defines the three EC2 instances: `blue_server`, `green_server`, and `proxy_server`.
+* `security-groups.tf`: Creates the `web_sg` security group, allowing HTTP from anywhere and SSH from your IP.
+* `variables.tf`: Declares all input variables for the project, such as `aws_region`, `aws_ami`, and `blue-green-user-secret`.
+* `outputs.tf`: Declares the outputs for the public IPs of the proxy, blue, and green servers.
+* `terraform.tfvars`: Provides the value for the `blue-green-user-secret` variable.
+* `user-data-blue.sh`: Bootstrap script to install and configure Apache for the "Blue" deployment.
+* `user-data-green.sh`: Bootstrap script to install and configure Apache for the "Green" deployment.
+* `user-data-proxy.sh`: Bootstrap script to install and configure NGINX as a reverse proxy, using the private IPs of the blue and green servers.
+
+---
+
+## 🧹 Cleanup
+
+To destroy all the resources created by this project, run:
+
+```bash
+terraform destroy
