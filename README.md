@@ -138,7 +138,7 @@ This policy allows the user/role running Terraform to access the S3 backend stat
         }
     ]
 }
-
+```
 ### 2. Policy for the Project Service User (Credentials in Secret)
 
 This is the policy you should attach to the IAM user whose credentials are stored in the `blue-green-creds-qazpEp` secret. It grants only the permissions needed to create, manage, and describe the EC2 instances and security groups defined in this project.
@@ -176,7 +176,7 @@ This is the policy you should attach to the IAM user whose credentials are store
         }
     ]
 }
-
+```
 ---
 
 ## 🗂️ File Structure
@@ -199,3 +199,4 @@ To destroy all the resources created by this project, run:
 
 ```bash
 terraform destroy
+```
